@@ -12,22 +12,21 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
-public class MainActivity extends AppCompatActivity {
+public class SignUpActivity extends AppCompatActivity {
 
-    @BindView(R.id.txtSignUp)
-    TextView txtSignUp;
+    @BindView(R.id.txtLogin)
+    TextView txtLogin;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+        setContentView(R.layout.activity_sign_up);
         ButterKnife.bind(this);
         Objects.requireNonNull(getSupportActionBar()).hide();
-
     }
-    @OnClick(R.id.txtSignUp)
-    public void goToSignUpActivity(){
-        startActivity(new Intent(this,SignUpActivity.class));
+    @OnClick(R.id.txtLogin)
+    public void goToLoginScreen(){
+        startActivity(new Intent(this,MainActivity.class));
         finish();
     }
 }
