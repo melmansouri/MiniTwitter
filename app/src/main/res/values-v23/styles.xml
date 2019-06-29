@@ -2,7 +2,8 @@
 <resources>
 
     <style name="AppTheme" parent="Theme.AppCompat.DayNight">
-        <!-- Customize your theme here. -->
+        <!-- Con el dayNight pone el color del texto del toolbar en color oscuro
+        windowLightStatusBar ponemos lo iconos del status bar en negro para que halla contraste con status bar de color mas light-->
         <item name="colorPrimary">@color/colorPrimary</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="colorAccent">@color/colorAccent</item>
