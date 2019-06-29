@@ -9,7 +9,6 @@ import retrofit2.http.Body;
 import retrofit2.http.POST;
 
 public interface MiniTwitterService {
-     String URL_BASE="https://www.minitwitter.com:3001/apiv1/";
     @POST("/auth/login")
     Call<ResponseAuth> doLogin(@Body RequestLogin requestLogin);
 
