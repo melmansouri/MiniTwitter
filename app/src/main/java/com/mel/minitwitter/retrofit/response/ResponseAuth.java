@@ -1,4 +1,4 @@
-package com.mel.minitwitter.pojo;
+package com.mel.minitwitter.retrofit.response;
 
 public class ResponseAuth {
     private String token;

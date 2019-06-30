@@ -1,10 +1,12 @@
-package com.mel.minitwitter;
+package com.mel.minitwitter.ui;
 
 import android.content.Intent;
 import android.os.Bundle;
 import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
+
+import com.mel.minitwitter.R;
 
 import java.util.Objects;
 

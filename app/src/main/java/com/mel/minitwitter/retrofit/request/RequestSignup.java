@@ -1,4 +1,4 @@
-package com.mel.minitwitter.pojo;
+package com.mel.minitwitter.retrofit.request;
 
 public class RequestSignup {
     private String username;
