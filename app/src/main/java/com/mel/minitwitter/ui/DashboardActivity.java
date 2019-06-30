@@ -44,8 +44,6 @@ public class DashboardActivity extends AppCompatActivity {
         BottomNavigationView navView = findViewById(R.id.nav_view);
         mTextMessage = findViewById(R.id.message);
         navView.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
-
-        Toast.makeText(this, SharedPreferenceManager.getSomeStringValue(Constantes.PREF_TOKEN), Toast.LENGTH_SHORT).show();
     }
 
 }
