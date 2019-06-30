@@ -2,6 +2,8 @@ package com.mel.minitwitter.ui;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.text.TextUtils;
+import android.view.View;
 import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -16,11 +18,14 @@ import com.mel.minitwitter.retrofit.MiniTwitterService;
 import com.mel.minitwitter.retrofit.request.RequestLogin;
 import com.mel.minitwitter.retrofit.response.ResponseAuth;
 
+import org.w3c.dom.Text;
+
 import java.util.Objects;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import butterknife.OnTextChanged;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -57,6 +62,41 @@ public class MainActivity extends AppCompatActivity {
         miniTwitterService = miniTwitterClient.getMiniTwitterService();
     }
 
+    @OnTextChanged({R.id.edtEmail,R.id.edtPwd})
+    public void onTextChangedEmail(CharSequence text){
+        View view=getCurrentFocus(); //Por ahora no es posible pasar view como parametro
+        switch (view.getId()){
+            case R.id.edtEmail:
+                if (!TextUtils.isEmpty(text.toString().trim())){
+                    tilEmail.setError(null);
+                }
+                break;
+            case R.id.edtPwd:
+                if (!TextUtils.isEmpty(text.toString().trim())){
+                    tilEmail.setError(null);
+                }
+                break;
+        }
+
+    }
+
+    /*@OnTextChanged(R.id.edtPwd)
+    public void onTextChangedPwd(CharSequence text){
+        switch (view.getId()){
+            case R.id.edtEmail:
+                if (!TextUtils.isEmpty(text.toString().trim())){
+                    tilEmail.setError(null);
+                }
+                break;
+            case R.id.edtPwd:
+                if (!TextUtils.isEmpty(text.toString().trim())){
+                    tilEmail.setError(null);
+                }
+                break;
+        }
+
+    }*/
+
     @OnClick(R.id.btnLogin)
     public void login() {
         String email = edtEmail.getText().toString();
@@ -69,7 +109,7 @@ public class MainActivity extends AppCompatActivity {
             tilPwd.setError("Contraseña requerido");
         }
         if (isOkData) {
-            RequestLogin requestLogin = new RequestLogin(email, pwd);
+            RequestLogin requestLogin = new RequestLogin(email.trim(), pwd.trim());
             Call<ResponseAuth> call = miniTwitterService.doLogin(requestLogin);
             call.enqueue(new Callback<ResponseAuth>() {
                 @Override
