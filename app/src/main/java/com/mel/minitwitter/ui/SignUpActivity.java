@@ -13,6 +13,8 @@ import com.google.android.material.snackbar.Snackbar;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
 import com.mel.minitwitter.R;
+import com.mel.minitwitter.common.Constantes;
+import com.mel.minitwitter.common.SharedPreferenceManager;
 import com.mel.minitwitter.retrofit.MiniTwitterClient;
 import com.mel.minitwitter.retrofit.MiniTwitterService;
 import com.mel.minitwitter.retrofit.request.RequestSignup;
@@ -112,6 +114,7 @@ public class SignUpActivity extends AppCompatActivity {
                 @Override
                 public void onResponse(Call<ResponseAuth> call, Response<ResponseAuth> response) {
                     if (response.isSuccessful()){
+                        saveDataResponseLoginSharedPreference(response.body());
                         Intent intent = new Intent(SignUpActivity.this,DashboardActivity.class);
                         startActivity(intent);
                         //Destruimos la activity para que no se vuelva a la pantalla de login
@@ -133,5 +136,16 @@ public class SignUpActivity extends AppCompatActivity {
     public void goToLoginScreen() {
         startActivity(new Intent(this, MainActivity.class));
         finish();
+    }
+
+    private void saveDataResponseLoginSharedPreference(ResponseAuth responseAuth){
+        SharedPreferenceManager.setSomeStringValue(Constantes.PREF_TOKEN,responseAuth.getToken());
+        SharedPreferenceManager.setSomeStringValue(Constantes.PREF_USERNAME,responseAuth.getUsername());
+        SharedPreferenceManager.setSomeStringValue(Constantes.PREF_EMAIL,responseAuth.getEmail());
+        SharedPreferenceManager.setSomeStringValue(Constantes.PREF_PHOTO_URL,responseAuth.getPhotoUrl());
+        SharedPreferenceManager.setSomeStringValue(Constantes.PREF_CREATED,responseAuth.getCreated());
+        SharedPreferenceManager.setSomeStringValue(Constantes.PREF_ROLE,responseAuth.getRole());
+        SharedPreferenceManager.setSomeBooleanValue(Constantes.PREF_ACTIVE,responseAuth.isActive());
+
     }
 }

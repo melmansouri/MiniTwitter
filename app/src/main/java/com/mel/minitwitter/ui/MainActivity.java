@@ -1,6 +1,7 @@
 package com.mel.minitwitter.ui;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.View;
@@ -13,6 +14,8 @@ import com.google.android.material.snackbar.Snackbar;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
 import com.mel.minitwitter.R;
+import com.mel.minitwitter.common.Constantes;
+import com.mel.minitwitter.common.SharedPreferenceManager;
 import com.mel.minitwitter.retrofit.MiniTwitterClient;
 import com.mel.minitwitter.retrofit.MiniTwitterService;
 import com.mel.minitwitter.retrofit.request.RequestLogin;
@@ -104,9 +107,11 @@ public class MainActivity extends AppCompatActivity {
         boolean isOkData = true;
         if (email.isEmpty()) {
             tilEmail.setError("Email requerido");
+            isOkData=false;
         }
         if (pwd.isEmpty()) {
             tilPwd.setError("Contraseña requerido");
+            isOkData=false;
         }
         if (isOkData) {
             RequestLogin requestLogin = new RequestLogin(email.trim(), pwd.trim());
@@ -116,6 +121,7 @@ public class MainActivity extends AppCompatActivity {
                 public void onResponse(Call<ResponseAuth> call, Response<ResponseAuth> response) {
                     if (response.isSuccessful()){
                         Snackbar.make(rootLogin,"Sesión iniciada correctamente",Snackbar.LENGTH_SHORT).show();
+                        saveDataResponseLoginSharedPreference(response.body());
                         Intent intent = new Intent(MainActivity.this,DashboardActivity.class);
                         startActivity(intent);
                         //Destruimos la activity para que no se vuelva a la pantalla de login
@@ -137,5 +143,16 @@ public class MainActivity extends AppCompatActivity {
     public void goToSignUpActivity() {
         startActivity(new Intent(this, SignUpActivity.class));
         finish();
+    }
+
+    private void saveDataResponseLoginSharedPreference(ResponseAuth responseAuth){
+        SharedPreferenceManager.setSomeStringValue(Constantes.PREF_TOKEN,responseAuth.getToken());
+        SharedPreferenceManager.setSomeStringValue(Constantes.PREF_USERNAME,responseAuth.getUsername());
+        SharedPreferenceManager.setSomeStringValue(Constantes.PREF_EMAIL,responseAuth.getEmail());
+        SharedPreferenceManager.setSomeStringValue(Constantes.PREF_PHOTO_URL,responseAuth.getPhotoUrl());
+        SharedPreferenceManager.setSomeStringValue(Constantes.PREF_CREATED,responseAuth.getCreated());
+        SharedPreferenceManager.setSomeStringValue(Constantes.PREF_ROLE,responseAuth.getRole());
+        SharedPreferenceManager.setSomeBooleanValue(Constantes.PREF_ACTIVE,responseAuth.isActive());
+
     }
 }

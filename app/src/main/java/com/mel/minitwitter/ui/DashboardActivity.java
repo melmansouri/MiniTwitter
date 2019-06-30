@@ -4,12 +4,15 @@ import android.os.Bundle;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.mel.minitwitter.R;
+import com.mel.minitwitter.common.Constantes;
+import com.mel.minitwitter.common.SharedPreferenceManager;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.annotation.NonNull;
 
 import android.view.MenuItem;
 import android.widget.TextView;
+import android.widget.Toast;
 
 public class DashboardActivity extends AppCompatActivity {
     private TextView mTextMessage;
@@ -41,6 +44,8 @@ public class DashboardActivity extends AppCompatActivity {
         BottomNavigationView navView = findViewById(R.id.nav_view);
         mTextMessage = findViewById(R.id.message);
         navView.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
+
+        Toast.makeText(this, SharedPreferenceManager.getSomeStringValue(Constantes.PREF_TOKEN), Toast.LENGTH_SHORT).show();
     }
 
 }
