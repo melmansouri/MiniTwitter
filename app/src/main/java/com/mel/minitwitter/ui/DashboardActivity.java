@@ -35,7 +35,6 @@ public class DashboardActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_dashboard);
         BottomNavigationView navView = findViewById(R.id.nav_view);
-        mTextMessage = findViewById(R.id.message);
         getSupportActionBar().hide();
         navView.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
     }
