@@ -28,7 +28,7 @@ public class AuthInerceptor implements Interceptor {
         //Chain encale la peticion que recibimos y la que vamos a lanzar.
         // Bearer es algo propio de la forma en la que se estan gesationando los token en este ws de ejemplo
         Request request=chain.request().newBuilder()
-                .addHeader("Authorization","Bearer"+token).build();
+                .addHeader("Authorization","Bearer "+token).build();
         return chain.proceed(request);
 
     }

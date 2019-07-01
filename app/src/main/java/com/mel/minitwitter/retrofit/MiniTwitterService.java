@@ -3,9 +3,13 @@ package com.mel.minitwitter.retrofit;
 import com.mel.minitwitter.retrofit.request.RequestLogin;
 import com.mel.minitwitter.retrofit.request.RequestSignup;
 import com.mel.minitwitter.retrofit.response.ResponseAuth;
+import com.mel.minitwitter.retrofit.response.Tweet;
+
+import java.util.List;
 
 import retrofit2.Call;
 import retrofit2.http.Body;
+import retrofit2.http.GET;
 import retrofit2.http.POST;
 
 public interface MiniTwitterService {

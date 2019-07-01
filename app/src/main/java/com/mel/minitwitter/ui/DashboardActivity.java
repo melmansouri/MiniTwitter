@@ -20,6 +20,7 @@ public class DashboardActivity extends AppCompatActivity {
         public boolean onNavigationItemSelected(@NonNull MenuItem item) {
             switch (item.getItemId()) {
                 case R.id.navigation_home:
+
                     return true;
                 case R.id.navigation_tweets_like:
                     return true;
@@ -37,6 +38,8 @@ public class DashboardActivity extends AppCompatActivity {
         BottomNavigationView navView = findViewById(R.id.nav_view);
         getSupportActionBar().hide();
         navView.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
+        getSupportFragmentManager().beginTransaction().add(R.id.fragmentContainer,new TweetListFragment())
+                .commit();
     }
 
 }

@@ -44,11 +44,11 @@ public class MyTweetRecyclerViewAdapter extends RecyclerView.Adapter<MyTweetRecy
         holder.txtUsername.setText(holder.mItem.getUser().getUsername());
         holder.txtMessage.setText(mValues.get(position).getMensaje());
         int sizeLikes=mValues.get(position).getLikes()!=null?mValues.get(position).getLikes().size():0;
-        holder.txtlikesCount.setText(sizeLikes);
+        holder.txtlikesCount.setText(sizeLikes+"");
 
         if (!"".equals(holder.mItem.getUser().getPhotoUrl())){
             Glide.with(ctx)
-                    .load(Constantes.API_MINITWITTER_BASE_URL+"/upload/photos/"+holder.mItem.getUser().getPhotoUrl())
+                    .load("https://www.minitwitter.com/apiv1/uploads/photos/"+holder.mItem.getUser().getPhotoUrl())
             .into(holder.imgAvatar);
         }
 
