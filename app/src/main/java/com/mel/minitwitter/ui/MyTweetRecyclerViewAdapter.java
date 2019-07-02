@@ -40,6 +40,9 @@ public class MyTweetRecyclerViewAdapter extends RecyclerView.Adapter<MyTweetRecy
 
     @Override
     public void onBindViewHolder(final ViewHolder holder, int position) {
+        if (mValues==null){
+            return;
+        }
         holder.mItem = mValues.get(position);
         holder.txtUsername.setText(holder.mItem.getUser().getUsername());
         holder.txtMessage.setText(mValues.get(position).getMensaje());
@@ -66,7 +69,12 @@ public class MyTweetRecyclerViewAdapter extends RecyclerView.Adapter<MyTweetRecy
 
     @Override
     public int getItemCount() {
-        return mValues.size();
+        return mValues!=null?mValues.size():0;
+    }
+
+    public void setData(List<Tweet> tweetList){
+        mValues=tweetList;
+        notifyDataSetChanged();
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder {

@@ -8,12 +8,16 @@ import android.view.ViewGroup;
 
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.Observer;
+import androidx.lifecycle.ViewModelProvider;
+import androidx.lifecycle.ViewModelProviders;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.material.snackbar.Snackbar;
 import com.mel.minitwitter.R;
+import com.mel.minitwitter.data.TweetViewModel;
 import com.mel.minitwitter.retrofit.AuthTwitterClient;
 import com.mel.minitwitter.retrofit.AuthTwitterService;
 import com.mel.minitwitter.retrofit.response.Tweet;
@@ -42,6 +46,7 @@ public class TweetListFragment extends Fragment {
     private int mColumnCount = 1;
     private MyTweetRecyclerViewAdapter adapter;
     private List<Tweet> tweetList;
+    private TweetViewModel tweetViewModel;
 
 
     /**
@@ -65,6 +70,8 @@ public class TweetListFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+        //Asi conectamos esta vista con el view model
+        tweetViewModel= ViewModelProviders.of(getActivity()).get(TweetViewModel.class);
         if (getArguments() != null) {
             mColumnCount = getArguments().getInt(ARG_COLUMN_COUNT);
         }
@@ -82,6 +89,8 @@ public class TweetListFragment extends Fragment {
         } else {
             recyclerView.setLayoutManager(new GridLayoutManager(context, mColumnCount));
         }
+        adapter = new MyTweetRecyclerViewAdapter(getActivity(), tweetList);
+        recyclerView.setAdapter(adapter);
         loadTweetData();
         return view;
     }
@@ -91,10 +100,11 @@ public class TweetListFragment extends Fragment {
          * La invocacion al viewmodel estara aqui. Cuando recibamos informacion del repositorio atravez del view model
          * podremos cargar el adapter  con la lista de tweets
          */
-        if (tweetList != null) {
-            adapter = new MyTweetRecyclerViewAdapter(getActivity(), tweetList);
-            recyclerView.setAdapter(adapter);
-        }
+        tweetViewModel.getAllTweets().observe(getActivity(), tweets -> {
+            tweetList=tweets;
+            adapter.setData(tweetList);
+        });
+
 
     }
 }

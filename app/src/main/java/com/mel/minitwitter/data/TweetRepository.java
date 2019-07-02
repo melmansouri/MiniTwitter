@@ -31,9 +31,10 @@ public class TweetRepository {
          * Si se ve modificada la lista de tweets cuando se invoque getAllTweets la lista allTweets
          * notificara al viewmodel ese cambio y por lo tanto alli donde haya un metodo observador
          * se hara eco de este cambio que ha habido en la lista de allTweets y podremos refrescar
-         * el adaptador
+         * el adaptador.
+         * Esto no se usa en ningun lado asi que moi lo he comentado hasta que vea para que servi. Sin esto funciona sin problemas
          */
-        allTweets=getAllTweets();
+        //allTweets=getAllTweets();
     }
     private void retrofitInit() {
         authTwitterClient = AuthTwitterClient.getInstance();
