@@ -42,8 +42,7 @@ public class TweetListFragment extends Fragment {
     private int mColumnCount = 1;
     private MyTweetRecyclerViewAdapter adapter;
     private List<Tweet> tweetList;
-    private AuthTwitterService authTwitterService;
-    private AuthTwitterClient authTwitterClient;
+
 
     /**
      * Mandatory empty constructor for the fragment manager to instantiate the
@@ -83,38 +82,19 @@ public class TweetListFragment extends Fragment {
         } else {
             recyclerView.setLayoutManager(new GridLayoutManager(context, mColumnCount));
         }
-        retrofitInit();
         loadTweetData();
         return view;
     }
 
-    private void retrofitInit() {
-        authTwitterClient = AuthTwitterClient.getInstance();
-        authTwitterService = authTwitterClient.getAuthTwitterService();
-    }
-
     private void loadTweetData() {
-        Call<List<Tweet>> call = authTwitterService.getAllTweet();
-        //Metodo que nos permite ejecutar en segundo plano la peticion al servidor
-        call.enqueue(new Callback<List<Tweet>>() {
-            @Override
-            public void onResponse(Call<List<Tweet>> call, Response<List<Tweet>> response) {
-                if (response.isSuccessful()) {
-                    tweetList = response.body();
-                    if (tweetList != null) {
-                        adapter = new MyTweetRecyclerViewAdapter(getActivity(), tweetList);
-                        recyclerView.setAdapter(adapter);
-                    }
-                } else {
-                    Snackbar.make(rootFragmentListTweet, "Algo fue mal, revise sus datos de acceso", Snackbar.LENGTH_SHORT).show();
-                }
-            }
-
-            @Override
-            public void onFailure(Call<List<Tweet>> call, Throwable t) {
-                Snackbar.make(rootFragmentListTweet, "Problemas de conexión. Intentelo de nuevo", Snackbar.LENGTH_SHORT).show();
-            }
-        });
+        /**
+         * La invocacion al viewmodel estara aqui. Cuando recibamos informacion del repositorio atravez del view model
+         * podremos cargar el adapter  con la lista de tweets
+         */
+        if (tweetList != null) {
+            adapter = new MyTweetRecyclerViewAdapter(getActivity(), tweetList);
+            recyclerView.setAdapter(adapter);
+        }
 
     }
 }
