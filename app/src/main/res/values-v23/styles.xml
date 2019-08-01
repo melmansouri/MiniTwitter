@@ -9,4 +9,17 @@
         <item name="colorAccent">@color/colorAccent</item>
         <item name="android:windowLightStatusBar">true</item>
     </style>
+    <style name="FullScreenDialogStyle" parent="Theme.AppCompat.Dialog">
+        <item name="colorPrimary">@color/colorPrimary</item>
+        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
+        <item name="colorAccent">@color/colorPrimary</item>
+
+        <!-- estilos para pantalla completa -->
+        <item name="android:windowNoTitle">true</item>
+        <!--si es true tambien se ocultara la barra de estado-->
+        <item name="android:windowFullscreen">false</item>
+        <!--si fuese true pareceria un dialogo flotante-->
+        <item name="android:windowIsFloating">false</item>
+        <item name="android:windowBackground">@android:color/white</item>
+    </style>
 </resources>
