@@ -14,7 +14,7 @@
         android:layout_marginStart="24dp"
         android:layout_marginLeft="24dp"
         android:layout_marginTop="24dp"
-        android:src="@drawable/ic_close_blue"
+        app:srcCompat="@drawable/ic_close_blue"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
@@ -27,6 +27,7 @@
         android:background="@drawable/bg_nuevo_tweet_button"
         android:text="Twittear"
         android:textAllCaps="false"
+        android:enabled="false"
         android:textColor="@android:color/white"
         android:textStyle="bold"
         app:layout_constraintBottom_toBottomOf="@+id/imgCloseDialog"
@@ -38,7 +39,7 @@
         android:layout_width="50dp"
         android:layout_height="50dp"
         android:layout_marginTop="24dp"
-        android:src="@drawable/ic_account_circle_azul"
+        app:srcCompat="@drawable/ic_account_circle_azul"
         app:layout_constraintEnd_toEndOf="@+id/imgCloseDialog"
         app:layout_constraintStart_toStartOf="@+id/imgCloseDialog"
         app:layout_constraintTop_toBottomOf="@+id/imgCloseDialog" />

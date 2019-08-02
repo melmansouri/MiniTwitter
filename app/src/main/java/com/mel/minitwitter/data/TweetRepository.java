@@ -1,16 +1,14 @@
 package com.mel.minitwitter.data;
 
-import androidx.lifecycle.LiveData;
-import androidx.lifecycle.MutableLiveData;
-
-import com.google.android.material.snackbar.Snackbar;
 import com.mel.minitwitter.retrofit.AuthTwitterClient;
 import com.mel.minitwitter.retrofit.AuthTwitterService;
+import com.mel.minitwitter.retrofit.request.RequestCreateTweet;
 import com.mel.minitwitter.retrofit.response.Tweet;
-import com.mel.minitwitter.ui.MyTweetRecyclerViewAdapter;
 
+import java.util.ArrayList;
 import java.util.List;
 
+import androidx.lifecycle.MutableLiveData;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -23,7 +21,8 @@ public class TweetRepository {
     private AuthTwitterService authTwitterService;
     private AuthTwitterClient authTwitterClient;
     //A medida que introduzcamos nuevos datos esta lista viva se va a ir actualizando
-    private LiveData<List<Tweet>> allTweets;
+    //private LiveData<List<Tweet>> allTweets;//Al ser LiveData no podemos modificar ese listado
+    private MutableLiveData<List<Tweet>> allTweets;//He tenido que ponerlo como mutable para que puede añadirle el tweet que acabo de añadir
 
     public TweetRepository() {
         retrofitInit();
@@ -44,16 +43,20 @@ public class TweetRepository {
     /**
      * ESto es para cargar de tweets la variable allTweets
      */
-    public LiveData<List<Tweet>> getAllTweets(){
+    public MutableLiveData<List<Tweet>> getAllTweets(){
         //Un tipo de livedata que puede modificarse en el tiempo
-        final MutableLiveData<List<Tweet>> data=new MutableLiveData<>();
+        //final MutableLiveData<List<Tweet>> data=new MutableLiveData<>();Se comenta esto para hacer uso del objeto allTweets
+        //Ya que vamos a realizar cambios sobre esa lista que estamos observando cuando creamos un tweets y asi se refresque la lista de tweets.
+        if (allTweets==null){
+            allTweets=new MutableLiveData<>();
+        }
         Call<List<Tweet>> call = authTwitterService.getAllTweet();
         //Metodo que nos permite ejecutar en segundo plano la peticion al servidor
         call.enqueue(new Callback<List<Tweet>>() {
             @Override
             public void onResponse(Call<List<Tweet>> call, Response<List<Tweet>> response) {
                 if (response.isSuccessful()) {
-                    data.setValue(response.body());
+                    allTweets.setValue(response.body());
 
                 } else {
                     //Snackbar.make(rootFragmentListTweet, "Algo fue mal, revise sus datos de acceso", Snackbar.LENGTH_SHORT).show();
@@ -66,7 +69,37 @@ public class TweetRepository {
             }
         });
 
-        return data;
+        //return data;
+        return allTweets;
+    }
+
+    public void createTweet(RequestCreateTweet tweet){
+        authTwitterService.addTweet(tweet).enqueue(new Callback<Tweet>() {
+            @Override
+            public void onResponse(Call<Tweet> call, Response<Tweet> response) {
+                if (response.isSuccessful()){
+                    /**
+                     * No haremos allTweets.setValue ya que asi setea una lista entera
+                     * Recorreremos la lista de allTweets, la clonaremos ya que no la podemos modificar directamente
+                     * y sobre una lista clonada vamos a incluir el nuevo tweet y los tweets que ya teniamos
+                     */
+                    List<Tweet> listaClonada=new ArrayList<>();
+                    //Añadimos en primer lugar el nuevo tweet que nos llega del servidor
+                    listaClonada.add(response.body());
+                    //De cada elemento vamos a hacer una copia en la lista clonada
+                    for (int i=0;i<allTweets.getValue().size();i++){
+                        //Hacemos esto new Tweet(allTweets.getValue().get(i)) para que sea un nuevo objeto
+                        listaClonada.add(new Tweet(allTweets.getValue().get(i)));
+                    }
+                    //Si seteamos directamente el nuevo tweet perderiamos los que ya tenemos en la lista
+                    allTweets.setValue(listaClonada);
+                }
+            }
+
+            @Override
+            public void onFailure(Call<Tweet> call, Throwable t) {
+            }
+        });
     }
 
 }

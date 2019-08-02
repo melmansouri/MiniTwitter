@@ -1,9 +1,10 @@
 
 package com.mel.minitwitter.retrofit.response;
 
-import java.util.List;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
+
+import java.util.List;
 
 public class Tweet {
 
@@ -19,6 +20,14 @@ public class Tweet {
     @SerializedName("user")
     @Expose
     private User user;
+
+    public Tweet(){}
+    public Tweet(Tweet tweet) {
+        this.id= tweet.getId();
+        this.likes=tweet.getLikes();
+        this.mensaje=tweet.getMensaje();
+        this.user=tweet.getUser();
+    }
 
     public Integer getId() {
         return id;

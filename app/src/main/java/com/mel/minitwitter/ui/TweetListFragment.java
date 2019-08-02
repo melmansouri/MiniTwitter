@@ -6,29 +6,21 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import androidx.constraintlayout.widget.ConstraintLayout;
-import androidx.fragment.app.Fragment;
-import androidx.lifecycle.Observer;
-import androidx.lifecycle.ViewModelProvider;
-import androidx.lifecycle.ViewModelProviders;
-import androidx.recyclerview.widget.GridLayoutManager;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
-
-import com.google.android.material.snackbar.Snackbar;
 import com.mel.minitwitter.R;
 import com.mel.minitwitter.data.TweetViewModel;
-import com.mel.minitwitter.retrofit.AuthTwitterClient;
-import com.mel.minitwitter.retrofit.AuthTwitterService;
 import com.mel.minitwitter.retrofit.response.Tweet;
 
 import java.util.List;
 
+import androidx.constraintlayout.widget.ConstraintLayout;
+import androidx.fragment.app.Fragment;
+import androidx.lifecycle.ViewModelProviders;
+import androidx.recyclerview.widget.GridLayoutManager;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
+import butterknife.Unbinder;
 
 /**
  * Usaremos el patron mvvm para comunicar el frgment con la activity por eso eliminamos
@@ -47,6 +39,7 @@ public class TweetListFragment extends Fragment {
     private MyTweetRecyclerViewAdapter adapter;
     private List<Tweet> tweetList;
     private TweetViewModel tweetViewModel;
+    private Unbinder unbinder;
 
 
     /**
@@ -81,7 +74,7 @@ public class TweetListFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_tweet_list, container, false);
-        ButterKnife.bind(this, view);
+        unbinder=ButterKnife.bind(this, view);
 
         Context context = view.getContext();
         if (mColumnCount <= 1) {
@@ -104,7 +97,11 @@ public class TweetListFragment extends Fragment {
             tweetList=tweets;
             adapter.setData(tweetList);
         });
+    }
 
-
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        unbinder.unbind();
     }
 }

@@ -2,13 +2,14 @@ package com.mel.minitwitter.data;
 
 import android.app.Application;
 
-import androidx.annotation.NonNull;
-import androidx.lifecycle.AndroidViewModel;
-import androidx.lifecycle.LiveData;
-
+import com.mel.minitwitter.retrofit.request.RequestCreateTweet;
 import com.mel.minitwitter.retrofit.response.Tweet;
 
 import java.util.List;
+
+import androidx.annotation.NonNull;
+import androidx.lifecycle.AndroidViewModel;
+import androidx.lifecycle.LiveData;
 
 /**
  * AndroidViewModel es una clase definida en el paquete de arquitectura de android JetPack
@@ -31,5 +32,9 @@ public class TweetViewModel extends AndroidViewModel {
      */
     public LiveData<List<Tweet>> getAllTweets(){
         return allTweets;
+    }
+
+    public void createTweet(RequestCreateTweet tweet){
+        repository.createTweet(tweet);
     }
 }
