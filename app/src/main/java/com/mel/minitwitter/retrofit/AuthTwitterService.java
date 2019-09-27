@@ -14,6 +14,6 @@ public interface AuthTwitterService {
     @GET("tweets/all")
     Call<List<Tweet>> getAllTweet();
 
-    @POST("/tweets/create")
+    @POST("tweets/create")
     Call<Tweet> addTweet(@Body RequestCreateTweet requestCreateTweet);
 }

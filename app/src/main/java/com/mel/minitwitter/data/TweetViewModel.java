@@ -22,15 +22,29 @@ public class TweetViewModel extends AndroidViewModel {
     public TweetViewModel(@NonNull Application application) {
         super(application);
         repository=new TweetRepository();
+        //->
         allTweets=repository.getAllTweets();
     }
 
     /**
      * Cualquier elemento que quiera comunicarse con nuestro viewmodel quiere obtener los tweets
      * lo unico que tiene que hacer es invocar a este metodo
+     * -> esto se ha hecho de esta forma para que cada vez que llamemos a este metodo no tengamos que
+     * descargar todos los tweets (nuevos , y antiguos)
+     * Devuelve los tweets que se obtuvieron en el constructor y al ser un livedata pues en el activity
+     * o fragment  que hace uso del metodo escucha los cambios para solo obtener esos cambios
      * @return
      */
     public LiveData<List<Tweet>> getAllTweets(){
+        return allTweets;
+    }
+
+    /**
+     * Devuelve todos los tweets ya sean nuevos o antiguos
+     * @return
+     */
+    public LiveData<List<Tweet>> getNewAllTweets(){
+        allTweets=repository.getAllTweets();
         return allTweets;
     }
 
