@@ -76,7 +76,7 @@ public class MainActivity extends AppCompatActivity {
                 break;
             case R.id.edtPwd:
                 if (!TextUtils.isEmpty(text.toString().trim())){
-                    tilEmail.setError(null);
+                    tilPwd.setError(null);
                 }
                 break;
         }

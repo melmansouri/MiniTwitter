@@ -18,6 +18,8 @@ import androidx.lifecycle.ViewModelProviders;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
+
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
@@ -32,8 +34,8 @@ public class TweetListFragment extends Fragment {
     private static final String ARG_COLUMN_COUNT = "column-count";
     @BindView(R.id.list)
     RecyclerView recyclerView;
-    @BindView(R.id.rootFragmentListTweet)
-    ConstraintLayout rootFragmentListTweet;
+    @BindView(R.id.swipeRefreshLayout)
+    SwipeRefreshLayout swipeRefreshLayout;
     // TODO: Customize parameters
     private int mColumnCount = 1;
     private MyTweetRecyclerViewAdapter adapter;
@@ -77,6 +79,13 @@ public class TweetListFragment extends Fragment {
         unbinder=ButterKnife.bind(this, view);
 
         Context context = view.getContext();
+        swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                swipeRefreshLayout.setRefreshing(false);
+                loadNewData();
+            }
+        });
         if (mColumnCount <= 1) {
             recyclerView.setLayoutManager(new LinearLayoutManager(context));
         } else {
@@ -88,6 +97,9 @@ public class TweetListFragment extends Fragment {
         return view;
     }
 
+    /**
+     * La primera vez se llama a este metodo ya que ya estan los datos
+     */
     private void loadTweetData() {
         /**
          * La invocacion al viewmodel estara aqui. Cuando recibamos informacion del repositorio atravez del view model
@@ -96,6 +108,21 @@ public class TweetListFragment extends Fragment {
         tweetViewModel.getAllTweets().observe(getActivity(), tweets -> {
             tweetList=tweets;
             adapter.setData(tweetList);
+        });
+    }
+
+    /**
+     * Cada vez que queramos refrescar
+     */
+    private void loadNewData() {
+        /**
+         * La invocacion al viewmodel estara aqui. Cuando recibamos informacion del repositorio atravez del view model
+         * podremos cargar el adapter  con la lista de tweets
+         */
+        tweetViewModel.getNewAllTweets().observe(getActivity(), tweets -> {
+            tweetList=tweets;
+            adapter.setData(tweetList);
+            swipeRefreshLayout.setRefreshing(false);
         });
     }
 
