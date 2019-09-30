@@ -51,4 +51,7 @@ public class TweetViewModel extends AndroidViewModel {
     public void createTweet(RequestCreateTweet tweet){
         repository.createTweet(tweet);
     }
+    public void likeTweet(int id){
+        repository.likeTweet(id);
+    }
 }

@@ -1,5 +1,7 @@
 package com.mel.minitwitter.ui;
 
+import androidx.fragment.app.FragmentActivity;
+import androidx.lifecycle.ViewModelProviders;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.Context;
@@ -8,12 +10,14 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.QuickContactBadge;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.mel.minitwitter.R;
 import com.mel.minitwitter.common.Constantes;
 import com.mel.minitwitter.common.SharedPreferenceManager;
+import com.mel.minitwitter.data.TweetViewModel;
 import com.mel.minitwitter.retrofit.response.Like;
 import com.mel.minitwitter.retrofit.response.Tweet;
 
@@ -24,11 +28,13 @@ public class MyTweetRecyclerViewAdapter extends RecyclerView.Adapter<MyTweetRecy
     private List<Tweet> mValues;
     private Context ctx;
     private String username;
+    private TweetViewModel tweetViewModel;
 
     public MyTweetRecyclerViewAdapter(Context context, List<Tweet> items) {
         mValues = items;
         ctx=context;
         username= SharedPreferenceManager.getSomeStringValue(Constantes.PREF_USERNAME);
+        tweetViewModel= ViewModelProviders.of((FragmentActivity)ctx).get(TweetViewModel.class);
     }
 
     @Override
@@ -60,6 +66,13 @@ public class MyTweetRecyclerViewAdapter extends RecyclerView.Adapter<MyTweetRecy
                 .into(holder.imgLike);
         holder.txtlikesCount.setTextColor(ctx.getResources().getColor(android.R.color.black));
         holder.txtlikesCount.setTypeface(null, Typeface.NORMAL);
+
+        holder.imgLike.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                tweetViewModel.likeTweet(holder.mItem.getId());
+            }
+        });
 
         for (Like like:holder.mItem.getLikes()) {
             if (like.getUsername().equals(username)){

@@ -5,15 +5,17 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import com.mel.minitwitter.R;
+import com.mel.minitwitter.common.Constantes;
 import com.mel.minitwitter.data.TweetViewModel;
 import com.mel.minitwitter.retrofit.response.Tweet;
 
 import java.util.List;
 
-import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -30,14 +32,12 @@ import butterknife.Unbinder;
  */
 public class TweetListFragment extends Fragment {
 
-    // TODO: Customize parameter argument names
-    private static final String ARG_COLUMN_COUNT = "column-count";
     @BindView(R.id.list)
     RecyclerView recyclerView;
     @BindView(R.id.swipeRefreshLayout)
     SwipeRefreshLayout swipeRefreshLayout;
     // TODO: Customize parameters
-    private int mColumnCount = 1;
+    private int tweetListType = 1;
     private MyTweetRecyclerViewAdapter adapter;
     private List<Tweet> tweetList;
     private TweetViewModel tweetViewModel;
@@ -53,10 +53,10 @@ public class TweetListFragment extends Fragment {
 
     // TODO: Customize parameter initialization
     @SuppressWarnings("unused")
-    public static TweetListFragment newInstance(int columnCount) {
+    public static TweetListFragment newInstance(int tweetListType) {
         TweetListFragment fragment = new TweetListFragment();
         Bundle args = new Bundle();
-        args.putInt(ARG_COLUMN_COUNT, columnCount);
+        args.putInt(Constantes.TWEET_LIST_TYPE, tweetListType);
         fragment.setArguments(args);
         return fragment;
     }
@@ -68,7 +68,8 @@ public class TweetListFragment extends Fragment {
         //Asi conectamos esta vista con el view model
         tweetViewModel= ViewModelProviders.of(getActivity()).get(TweetViewModel.class);
         if (getArguments() != null) {
-            mColumnCount = getArguments().getInt(ARG_COLUMN_COUNT);
+            tweetListType = getArguments().getInt(Constantes.TWEET_LIST_TYPE);
+            Toast.makeText(getActivity(),"sdfsdf "+tweetListType,Toast.LENGTH_SHORT).show();
         }
     }
 
@@ -77,24 +78,42 @@ public class TweetListFragment extends Fragment {
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_tweet_list, container, false);
         unbinder=ButterKnife.bind(this, view);
-
-        Context context = view.getContext();
+        swipeRefreshLayout.setColorSchemeColors(getResources().getColor(R.color.colorAzul));
         swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
                 swipeRefreshLayout.setRefreshing(false);
-                loadNewData();
+                if (tweetListType==Constantes.TWEET_LIST_ALL){
+                    loadNewData();
+                }else{
+                    loadNewFavData();
+                }
             }
         });
-        if (mColumnCount <= 1) {
-            recyclerView.setLayoutManager(new LinearLayoutManager(context));
-        } else {
-            recyclerView.setLayoutManager(new GridLayoutManager(context, mColumnCount));
-        }
         adapter = new MyTweetRecyclerViewAdapter(getActivity(), tweetList);
         recyclerView.setAdapter(adapter);
-        loadTweetData();
+        if (tweetListType==Constantes.TWEET_LIST_ALL){
+            loadTweetData();
+        }else{
+            loadFavTweetData();
+        }
         return view;
+    }
+
+    /**
+     * Para hacerlo mas eficiente no vamos a atacar el servidor para obtenerlos
+     * si no que vamos a recorrer aquellos tweets que tenmos y sobre ellos vamos a filtrar aquellos en los que el usuario ha marcado un like
+     */
+    private void loadNewFavData() {
+
+    }
+
+    /**
+     * Para hacerlo mas eficiente no vamos a atacar el servidor para obtenerlos
+     * si no que vamos a recorrer aquellos tweets que tenmos y sobre ellos vamos a filtrar aquellos en los que el usuario ha marcado un like
+     */
+    private void loadFavTweetData() {
+
     }
 
     /**
@@ -104,6 +123,7 @@ public class TweetListFragment extends Fragment {
         /**
          * La invocacion al viewmodel estara aqui. Cuando recibamos informacion del repositorio atravez del view model
          * podremos cargar el adapter  con la lista de tweets
+         * ??>
          */
         tweetViewModel.getAllTweets().observe(getActivity(), tweets -> {
             tweetList=tweets;
@@ -113,16 +133,25 @@ public class TweetListFragment extends Fragment {
 
     /**
      * Cada vez que queramos refrescar
+     *
      */
     private void loadNewData() {
         /**
          * La invocacion al viewmodel estara aqui. Cuando recibamos informacion del repositorio atravez del view model
-         * podremos cargar el adapter  con la lista de tweets
+         * podremos cargar el adapter  con la lista de tweets.
+         * ??>
+         * No podemos dejar este observador pendiente de la lista de tweet ya que tendriamos en total
+         * 2 obeservadores que se lanzarian a manejar el recyclerview y esi estarua nak.
+         * Para evitar esto hay que desactivar el observer
          */
-        tweetViewModel.getNewAllTweets().observe(getActivity(), tweets -> {
-            tweetList=tweets;
-            adapter.setData(tweetList);
-            swipeRefreshLayout.setRefreshing(false);
+        tweetViewModel.getNewAllTweets().observe(getActivity(), new Observer<List<Tweet>>() {
+            @Override
+            public void onChanged(List<Tweet> tweets) {
+                tweetList=tweets;
+                adapter.setData(tweetList);
+                swipeRefreshLayout.setRefreshing(false);
+                tweetViewModel.getNewAllTweets().removeObserver(this);
+            }
         });
     }
 
