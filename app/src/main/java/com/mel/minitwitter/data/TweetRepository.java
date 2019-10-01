@@ -169,6 +169,9 @@ public class TweetRepository {
                     }
                     //Si seteamos directamente el nuevo tweet perderiamos los que ya tenemos en la lista
                     allTweets.setValue(listaClonada);
+
+                    //Hay que refrescar la lista de tweets favoritos ya que hay un like o dislike nuevo
+                    getFavsTweets();
                 }
             }
 

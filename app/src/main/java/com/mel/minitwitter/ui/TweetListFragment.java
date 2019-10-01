@@ -15,6 +15,7 @@ import com.mel.minitwitter.retrofit.response.Tweet;
 import java.util.List;
 
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.LiveData;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
 import androidx.recyclerview.widget.GridLayoutManager;
@@ -103,9 +104,20 @@ public class TweetListFragment extends Fragment {
     /**
      * Para hacerlo mas eficiente no vamos a atacar el servidor para obtenerlos
      * si no que vamos a recorrer aquellos tweets que tenmos y sobre ellos vamos a filtrar aquellos en los que el usuario ha marcado un like
+     * Metodo invocado por el swipetorefresh
      */
     private void loadNewFavData() {
-
+        //Trae nuevos tweets del servidor y los favoritos
+        LiveData<List<Tweet>>liveDataFavTweets= tweetViewModel.getNewFavTweets();
+        liveDataFavTweets.observe(getActivity(), new Observer<List<Tweet>>() {
+            @Override
+            public void onChanged(List<Tweet> tweets) {
+                tweetList=tweets;
+                adapter.setData(tweetList);
+                swipeRefreshLayout.setRefreshing(false);
+                liveDataFavTweets.removeObserver(this);
+            }
+        });
     }
 
     /**
@@ -113,7 +125,13 @@ public class TweetListFragment extends Fragment {
      * si no que vamos a recorrer aquellos tweets que tenmos y sobre ellos vamos a filtrar aquellos en los que el usuario ha marcado un like
      */
     private void loadFavTweetData() {
-
+        tweetViewModel.getFavTweets().observe(getActivity(), new Observer<List<Tweet>>() {
+            @Override
+            public void onChanged(List<Tweet> tweets) {
+                tweetList=tweets;
+                adapter.setData(tweetList);
+            }
+        });
     }
 
     /**
@@ -133,7 +151,7 @@ public class TweetListFragment extends Fragment {
 
     /**
      * Cada vez que queramos refrescar
-     *
+     *Invocado por el swipetorefresh
      */
     private void loadNewData() {
         /**
@@ -144,13 +162,14 @@ public class TweetListFragment extends Fragment {
          * 2 obeservadores que se lanzarian a manejar el recyclerview y esi estarua nak.
          * Para evitar esto hay que desactivar el observer
          */
-        tweetViewModel.getNewAllTweets().observe(getActivity(), new Observer<List<Tweet>>() {
+        LiveData<List<Tweet>> liveDataTweets= tweetViewModel.getNewAllTweets();
+        liveDataTweets.observe(getActivity(), new Observer<List<Tweet>>() {
             @Override
             public void onChanged(List<Tweet> tweets) {
                 tweetList=tweets;
                 adapter.setData(tweetList);
                 swipeRefreshLayout.setRefreshing(false);
-                tweetViewModel.getNewAllTweets().removeObserver(this);
+                liveDataTweets.removeObserver(this);
             }
         });
     }

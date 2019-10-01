@@ -19,6 +19,8 @@ public class TweetViewModel extends AndroidViewModel {
     private TweetRepository repository;
     //Es una variable que nos permite obervarlas y en el caso de que haya un cambio pues nos permite capturarlo
     private LiveData<List<Tweet>> allTweets;
+
+    private LiveData<List<Tweet>> favTweets;
     public TweetViewModel(@NonNull Application application) {
         super(application);
         repository=new TweetRepository();
@@ -39,6 +41,11 @@ public class TweetViewModel extends AndroidViewModel {
         return allTweets;
     }
 
+    public LiveData<List<Tweet>> getFavTweets(){
+        favTweets=repository.getFavsTweets();
+        return favTweets;
+    }
+
     /**
      * Devuelve todos los tweets ya sean nuevos o antiguos
      * @return
@@ -48,6 +55,14 @@ public class TweetViewModel extends AndroidViewModel {
         return allTweets;
     }
 
+    /**
+     * Actualiza los tweets para tener los mas recientes y apartir de ellos actualizar la lista de favoritos
+     * @return
+     */
+    public LiveData<List<Tweet>> getNewFavTweets(){
+        getNewAllTweets();
+        return getFavTweets();
+    }
     public void createTweet(RequestCreateTweet tweet){
         repository.createTweet(tweet);
     }
