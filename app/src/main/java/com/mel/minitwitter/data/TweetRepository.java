@@ -6,6 +6,7 @@ import com.mel.minitwitter.retrofit.AuthTwitterClient;
 import com.mel.minitwitter.retrofit.AuthTwitterService;
 import com.mel.minitwitter.retrofit.request.RequestCreateTweet;
 import com.mel.minitwitter.retrofit.response.Like;
+import com.mel.minitwitter.retrofit.response.ResponseDelete;
 import com.mel.minitwitter.retrofit.response.Tweet;
 
 import java.util.ArrayList;
@@ -90,7 +91,7 @@ public class TweetRepository {
         //Tendran solo los que sean favoritos
         List<Tweet> newFavList=new ArrayList<>();
 
-        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.N) {
+        if (/*android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.N*/false) {
             //TODO Para mas adelante
             //Lambdas
         }else{
@@ -139,6 +140,30 @@ public class TweetRepository {
 
             @Override
             public void onFailure(Call<Tweet> call, Throwable t) {
+            }
+        });
+    }
+
+    public void deleteTweet(final int idTweet){
+        Call<ResponseDelete> call=authTwitterService.deleteTweet(idTweet);
+        call.enqueue(new Callback<ResponseDelete>() {
+            @Override
+            public void onResponse(Call<ResponseDelete> call, Response<ResponseDelete> response) {
+                if (response.isSuccessful()){
+                    List<Tweet> tweetsCloned=new ArrayList<>();
+                    for (int i=0;i<allTweets.getValue().size();i++){
+                        if (allTweets.getValue().get(i).getId()!=idTweet){
+                            tweetsCloned.add(new Tweet(allTweets.getValue().get(i)));
+                        }
+                    }
+                    allTweets.setValue(tweetsCloned);
+                    getFavsTweets();
+                }
+            }
+
+            @Override
+            public void onFailure(Call<ResponseDelete> call, Throwable t) {
+
             }
         });
     }

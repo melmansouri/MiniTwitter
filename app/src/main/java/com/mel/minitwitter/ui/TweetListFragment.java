@@ -70,7 +70,6 @@ public class TweetListFragment extends Fragment {
         tweetViewModel= ViewModelProviders.of(getActivity()).get(TweetViewModel.class);
         if (getArguments() != null) {
             tweetListType = getArguments().getInt(Constantes.TWEET_LIST_TYPE);
-            Toast.makeText(getActivity(),"sdfsdf "+tweetListType,Toast.LENGTH_SHORT).show();
         }
     }
 
@@ -109,7 +108,7 @@ public class TweetListFragment extends Fragment {
     private void loadNewFavData() {
         //Trae nuevos tweets del servidor y los favoritos
         LiveData<List<Tweet>>liveDataFavTweets= tweetViewModel.getNewFavTweets();
-        liveDataFavTweets.observe(getActivity(), new Observer<List<Tweet>>() {
+        liveDataFavTweets.observe(getViewLifecycleOwner(), new Observer<List<Tweet>>() {
             @Override
             public void onChanged(List<Tweet> tweets) {
                 tweetList=tweets;
@@ -125,7 +124,7 @@ public class TweetListFragment extends Fragment {
      * si no que vamos a recorrer aquellos tweets que tenmos y sobre ellos vamos a filtrar aquellos en los que el usuario ha marcado un like
      */
     private void loadFavTweetData() {
-        tweetViewModel.getFavTweets().observe(getActivity(), new Observer<List<Tweet>>() {
+        tweetViewModel.getFavTweets().observe(getViewLifecycleOwner(), new Observer<List<Tweet>>() {
             @Override
             public void onChanged(List<Tweet> tweets) {
                 tweetList=tweets;
@@ -143,7 +142,7 @@ public class TweetListFragment extends Fragment {
          * podremos cargar el adapter  con la lista de tweets
          * ??>
          */
-        tweetViewModel.getAllTweets().observe(getActivity(), tweets -> {
+        tweetViewModel.getAllTweets().observe(getViewLifecycleOwner(), tweets -> {
             tweetList=tweets;
             adapter.setData(tweetList);
         });
@@ -163,7 +162,7 @@ public class TweetListFragment extends Fragment {
          * Para evitar esto hay que desactivar el observer
          */
         LiveData<List<Tweet>> liveDataTweets= tweetViewModel.getNewAllTweets();
-        liveDataTweets.observe(getActivity(), new Observer<List<Tweet>>() {
+        liveDataTweets.observe(getViewLifecycleOwner(), new Observer<List<Tweet>>() {
             @Override
             public void onChanged(List<Tweet> tweets) {
                 tweetList=tweets;

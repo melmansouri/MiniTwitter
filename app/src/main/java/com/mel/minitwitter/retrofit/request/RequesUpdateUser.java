@@ -1,39 +1,14 @@
-
-package com.mel.minitwitter.retrofit.response;
+package com.mel.minitwitter.retrofit.request;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
-public class User {
-
-    @SerializedName("id")
-    @Expose
-    private Integer id;
-    @SerializedName("username")
-    @Expose
+public class RequesUpdateUser {
     private String username;
-
     private String email;
-    @SerializedName("descripcion")
-    @Expose
     private String descripcion;
-    @SerializedName("website")
-    @Expose
     private String website;
-    @SerializedName("photoUrl")
-    @Expose
-    private String photoUrl;
-    @SerializedName("created")
-    @Expose
-    private String created;
-
-    public Integer getId() {
-        return id;
-    }
-
-    public void setId(Integer id) {
-        this.id = id;
-    }
+    private String password;
 
     public String getUsername() {
         return username;
@@ -67,20 +42,11 @@ public class User {
         this.website = website;
     }
 
-    public String getPhotoUrl() {
-        return photoUrl;
+    public String getPassword() {
+        return password;
     }
 
-    public void setPhotoUrl(String photoUrl) {
-        this.photoUrl = photoUrl;
+    public void setPassword(String password) {
+        this.password = password;
     }
-
-    public String getCreated() {
-        return created;
-    }
-
-    public void setCreated(String created) {
-        this.created = created;
-    }
-
 }

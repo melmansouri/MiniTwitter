@@ -49,17 +49,16 @@ public class MyTweetRecyclerViewAdapter extends RecyclerView.Adapter<MyTweetRecy
         if (mValues==null){
             return;
         }
-        holder.mItem = mValues.get(position);
+         holder.mItem = mValues.get(position);
         holder.txtUsername.setText("@"+holder.mItem.getUser().getUsername());
         holder.txtMessage.setText(mValues.get(position).getMensaje());
         int sizeLikes=mValues.get(position).getLikes()!=null?mValues.get(position).getLikes().size():0;
         holder.txtlikesCount.setText(sizeLikes+"");
 
-        if (!"".equals(holder.mItem.getUser().getPhotoUrl())){
-            Glide.with(ctx)
-                    .load("https://www.minitwitter.com/apiv1/uploads/photos/"+holder.mItem.getUser().getPhotoUrl())
-            .into(holder.imgAvatar);
-        }
+        Glide.with(ctx)
+                .load("https://www.minitwitter.com/apiv1/uploads/photos/"+holder.mItem.getUser().getPhotoUrl())
+                .placeholder(R.drawable.logo_minitwitter_mini)
+                .into(holder.imgAvatar);
 
         Glide.with(ctx)
                 .load(R.drawable.ic_like)
@@ -71,6 +70,16 @@ public class MyTweetRecyclerViewAdapter extends RecyclerView.Adapter<MyTweetRecy
             @Override
             public void onClick(View v) {
                 tweetViewModel.likeTweet(holder.mItem.getId());
+            }
+        });
+        holder.imgMenu.setVisibility(View.GONE);
+        if (holder.mItem.getUser().getUsername().equals(username)){
+            holder.imgMenu.setVisibility(View.VISIBLE);
+        }
+        holder.imgMenu.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                tweetViewModel.openDialogTweet(ctx,holder.mItem.getId());
             }
         });
 
@@ -103,6 +112,7 @@ public class MyTweetRecyclerViewAdapter extends RecyclerView.Adapter<MyTweetRecy
         public final TextView txtUsername;
         public final TextView txtMessage;
         public final TextView txtlikesCount;
+        public final ImageView imgMenu;
         public Tweet mItem;
 
         public ViewHolder(View view) {
@@ -110,6 +120,7 @@ public class MyTweetRecyclerViewAdapter extends RecyclerView.Adapter<MyTweetRecy
             mView = view;
             imgAvatar = view.findViewById(R.id.imgAvatar);
             imgLike = view.findViewById(R.id.imgLike);
+            imgMenu = view.findViewById(R.id.menu_bottom_tweet);
             txtUsername = view.findViewById(R.id.txtUsername);
             txtMessage = view.findViewById(R.id.txtMessage);
             txtlikesCount = view.findViewById(R.id.txtLikesCount);

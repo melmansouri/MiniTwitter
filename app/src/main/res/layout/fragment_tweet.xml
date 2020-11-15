@@ -64,4 +64,13 @@
         app:layout_constraintBottom_toBottomOf="@+id/imgLike"
         app:layout_constraintStart_toEndOf="@+id/imgLike"
         app:layout_constraintTop_toTopOf="@+id/imgLike" />
+
+    <ImageView
+        android:id="@+id/menu_bottom_tweet"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@android:drawable/arrow_down_float" />
 </androidx.constraintlayout.widget.ConstraintLayout>
